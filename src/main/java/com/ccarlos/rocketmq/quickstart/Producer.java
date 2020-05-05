@@ -21,12 +21,12 @@ public class Producer {
 
 		producer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
 
-		// 手动设置超时时间
+		// 手动设置超时时间 非常重要
 		producer.setSendMsgTimeout(10000);
 
 		producer.start();
 
-		for(int i = 0 ; i <5000; i ++) {
+		for(int i = 0 ; i <500000; i ++) {
 			//	1.	创建消息
 			Message message = new Message("test_quick_topic",    //	主题
 					"TagA", //	标签
