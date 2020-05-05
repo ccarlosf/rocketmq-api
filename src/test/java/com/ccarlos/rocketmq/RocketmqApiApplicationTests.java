@@ -1,13 +1,13 @@
 package com.ccarlos.rocketmq;
 
-import org.junit.jupiter.api.Test;
+import org.junit.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
-class RocketmqApiApplicationTests {
+public class RocketmqApiApplicationTests {
 
     @Test
-    void contextLoads() {
+    public void contextLoads() {
     }
 
 }
