@@ -20,14 +20,16 @@ public class Producer {
 		DefaultMQProducer producer = new DefaultMQProducer
 				("test_quick_producer_name");
 
-		producer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
+//		producer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
+
+		producer.setNamesrvAddr(Const.NAMESRV_ADDR_MASTER_SLAVE);
 
 		// 手动设置超时时间 非常重要
 		producer.setSendMsgTimeout(10000);
 
 		producer.start();
 
-		for(int i = 0 ; i <7 ; i ++) {
+		for(int i = 0 ; i <1 ; i ++) {
 			//	1.	创建消息
 			Message message = new Message("test_quick_topic",    //	主题
 					"TagA", //	标签

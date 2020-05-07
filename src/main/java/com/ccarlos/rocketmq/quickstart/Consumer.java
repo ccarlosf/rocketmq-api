@@ -20,7 +20,9 @@ public class Consumer {
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer
                 ("test_quick_consumer_name");
 
-        consumer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
+//        consumer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
+
+        consumer.setNamesrvAddr(Const.NAMESRV_ADDR_MASTER_SLAVE);
 
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_LAST_OFFSET);
 
@@ -36,22 +38,22 @@ public class Consumer {
                     String topic = me.getTopic();
                     String tags = me.getTags();
                     String keys = me.getKeys();
-					if(keys.equals("key1")) {
+					/*if(keys.equals("key1")) {
 						System.err.println("消息消费失败..");
 						int a = 1/0;
-					}
+					}*/
 
                     String msgBody = new String(me.getBody(), RemotingHelper.DEFAULT_CHARSET);
                     System.err.println("topic: " + topic + ",tags: " + tags + ", keys: " + keys + ",body: " + msgBody);
                 } catch (Exception e) {
                     e.printStackTrace();
-					int recousumeTimes = me.getReconsumeTimes();
+					/*int recousumeTimes = me.getReconsumeTimes();
 					System.err.println("recousumeTimes: " + recousumeTimes);
 					if(recousumeTimes == 3) {
 						//		记录日志....
 						//  	做补偿处理
 						return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-					}
+					}*/
 
                     return ConsumeConcurrentlyStatus.RECONSUME_LATER;
                 }

@@ -1,0 +1,81 @@
+关闭broker
+sh mqshutdown broker
+
+关闭namesrv
+sh mqshutdown namesrv
+
+修改hosts文件
+vim /etc/hosts
+192.168.253.136 rocketmq-nameserver1
+192.168.253.136 rocketmq-master1
+192.168.253.137 rocketmq-nameserver2
+192.168.253.137 rocketmq-master1-slave
+
+跨服务器复制文件
+scp apache-rocketmq.tar.gz 192.168.253.137:/home/software/
+
+创建目录
+mkdir /usr/local/apache-rocketmq
+
+解压rocketmq
+tar -zxvf apache-rocketmq.tar.gz -C /usr/local/apache-rocketmq/
+
+建立软链接
+ln -s apache-rocketmq rocketmq
+
+创建存储数据文件夹
+mkdir /usr/local/rocketmq/store
+mkdir /usr/local/rocketmq/store/commitlog
+mkdir /usr/local/rocketmq/store/consumequeue
+mkdir /usr/local/rocketmq/store/index
+
+创建日志文件夹
+mkdir -p /usr/local/rocketmq/logs
+全局替换
+cd /usr/local/rocketmq/conf && sed -i 's#${user.home}#/usr/local/rocketmq#g' *.xml
+
+修改jvm参数
+vim /usr/local/rocketmq/bin/runbroker.sh
+vim /usr/local/rocketmq/bin/runserver.sh
+
+修改主从配置文件
+cd /usr/local/rocketmq/conf/2m-2s-async/
+
+vi broker-a.properties
+namesrvAddr=rocketmq-nameserver1:9876;rocketmq-nameserver2:9876
+
+vi broker-a-s.properties
+备份配置
+#brokerClusterName=DefaultCluster
+#brokerName=broker-a
+#brokerId=1
+#deleteWhen=04
+#fileReservedTime=48
+#brokerRole=SLAVE
+#flushDiskType=ASYNC_FLUSH
+
+修改配置
+brokerRole=SLAVE
+brokerId=1
+namesrvAddr=rocketmq-nameserver1:9876;rocketmq-nameserver2:9876
+
+同步配置文件到另外台服务器
+scp broker-a.properties broker-a-s.properties 192.168.253.137:/usr/local/rocketmq/conf/2m-2s-async/
+
+启动主节点
+cd /usr/local/rocketmq/bin
+nohup sh mqnamesrv &
+nohup sh mqbroker -c /usr/local/rocketmq/conf/2m-2s-async/broker-a.properties >/dev/null 2>&1 &
+
+
+启动从节点
+cd /usr/local/rocketmq/bin
+nohup sh mqnamesrv &
+nohup sh mqbroker -c /usr/local/rocketmq/conf/2m-2s-async/broker-a-s.properties >/dev/null 2>&1 &
+
+
+
+
+
+
+
