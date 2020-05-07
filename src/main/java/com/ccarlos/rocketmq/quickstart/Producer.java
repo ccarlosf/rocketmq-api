@@ -17,7 +17,8 @@ public class Producer {
 
 	public static void main(String[] args) throws MQClientException, RemotingException, MQBrokerException, InterruptedException {
 
-		DefaultMQProducer producer = new DefaultMQProducer("test_quick_producer_name");
+		DefaultMQProducer producer = new DefaultMQProducer
+				("test_quick_producer_name");
 
 		producer.setNamesrvAddr(Const.NAMESRV_ADDR_SINGLE);
 
@@ -26,7 +27,7 @@ public class Producer {
 
 		producer.start();
 
-		for(int i = 0 ; i <500000; i ++) {
+		for(int i = 0 ; i <7 ; i ++) {
 			//	1.	创建消息
 			Message message = new Message("test_quick_topic",    //	主题
 					"TagA", //	标签
