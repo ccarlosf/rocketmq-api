@@ -14,13 +14,14 @@ public class Consumer2 {
 
 	public Consumer2() {
 		try {
-			String group_name = "test_model_consumer_name";
+			String group_name = "test_model_consumer_name2";
 			DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(group_name);
 			consumer.setNamesrvAddr(Const.NAMESRV_ADDR_MASTER_SLAVE);
 //			consumer.setMessageModel(MessageModel.CLUSTERING);
 // 			consumer.subscribe("test_model_topic2", "*");
 			consumer.setMessageModel(MessageModel.BROADCASTING);
-			consumer.subscribe("test_model_topic3", "*");
+//			consumer.subscribe("test_model_topic3", "*");
+			consumer.subscribe("test_model_topic3", "TagB");
 			consumer.registerMessageListener(new Listener());
 			consumer.start();
 		} catch (Exception e) {
