@@ -26,7 +26,7 @@ public class Producer {
 
         producer.start();
 
-        for (int i = 0; i < 2; i++) {
+        for (int i = 0; i < 5; i++) {
             //	1.	创建消息
             Message message = new Message("test_quick_topic",    //	主题
                     "TagA", //	标签
@@ -34,15 +34,25 @@ public class Producer {
                     ("Hello RocketMQ" + i).getBytes());    //	消息内容实体（byte[]）
 
             // 设置延迟时间
-			if(i == 1) {
+		/*	if(i == 1) {
 				message.setDelayTimeLevel(3);
-			}
+			}*/
+
+            SendResult sr = producer.send(message, new MessageQueueSelector() {
+
+                @Override
+                public MessageQueue select(List<MessageQueue> mqs, Message msg, Object arg) {
+                    Integer queueNumber = (Integer) arg;
+                    return mqs.get(queueNumber);
+                }
+            }, 2);
+            System.err.println(sr);
 
             // 2.1 同步发送消息
-            SendResult sr = producer.send(message);
-            SendStatus status = sr.getSendStatus();
-            System.err.println(status);
-            System.err.println("消息发出: " + sr);
+//            SendResult sr = producer.send(message);
+//            SendStatus status = sr.getSendStatus();
+//            System.err.println(status);
+//            System.err.println("消息发出: " + sr);
 
             // 2.2 异步发送消息
          /*   producer.send(message, new SendCallback() {
