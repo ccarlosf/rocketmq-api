@@ -1,0 +1,58 @@
+1.关闭防火墙
+systemctl stop firewalld
+
+2.修改主机名
+vi /etc/hostname
+docker133
+docker134
+docker135
+
+3.配置主机名称
+vi /etc/hosts
+192.168.253.133 docker133
+192.168.253.134 docker134
+192.168.253.135 docker135
+
+4.上传zookeeper
+cd /home/software/
+
+5.安装zookeeper
+进行解压：		tar zookeeper-3.4.6.tar.gz
+重命名：		mv zookeeper-3.4.6 zookeeper
+修改环境变量：	vi /etc/profile
+                export JAVA_HOME=/usr/java/jdk1.8.0_191
+                export ZOOKEEPER_HOME=/usr/local/zookeeper
+                export CLASSPATH=.:%JAVA_HOME%/lib/dt.jar:%JAVA_HOME%/lib/tools.jar
+                export PATH=$PATH:$JAVA_HOME/bin:$ZOOKEEPER_HOME/bin
+刷新：		    source /etc/profile
+到zookeeper下修改配置文件
+						cd /usr/local/zookeeper/conf
+						mv zoo_sample.cfg zoo.cfg
+修改conf: 	vi zoo.cfg  修改两处
+						（1）dataDir=/usr/local/zookeeper/data
+						（2）最后面添加
+						    server.0=docker133:2888:3888
+							server.1=docker135:2888:3888
+							server.2=docker134:2888:3888
+服务器标识配置：
+						创建文件夹：mkdir data
+						touch myid
+						创建文件myid 路径 应该创建在：(vi /usr/local/zookeeper/data/myid)
+						把myid文件里的值修改为0，1，2 与我们的server.0 server.1 server.2
+
+启动zookeeper：
+			路径：cd /usr/local/zookeeper/bin
+			执行：zkServer.sh start (注意这里3台机器都要进行启动)
+			状态：zkServer.sh status(在三个节点上检验zk的mode,一个leader和俩个follower)
+
+移动myid文件到data目录 mv myid data
+
+1.3 操作zookeeper (shell)
+			zkCli.sh 进入zookeeper客户端
+			根据提示命令进行操作：
+					查找：ls /   ls /zookeeper
+					创建并赋值：create /bhz hadoop
+					获取：get /bhz
+					设值：set /bhz baihezhuo
+					可以看到zookeeper集群的数据一致性
+			创建节点有俩种类型：短暂（ephemeral） 持久（persistent）
